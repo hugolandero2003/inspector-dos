@@ -1,0 +1,23 @@
+{
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true,
+    "**/app/generated/**": true
+  },
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true
+  },
+  "search.exclude": {
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/app/generated": true
+  },
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "extensions.experimental.affinity": {
+    "dbaeumer.vscode-eslint": 1,
+    "esbenp.prettier-vscode": 1,
+    "prisma.prisma": 1
+  }
+}

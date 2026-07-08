@@ -1,0 +1,41 @@
+// Prisma schema for PESV Inspector de Carros
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  username    String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  inspections Inspection[]
+}
+
+model Inspection {
+  id            String   @id @default(cuid())
+  placa         String
+  interno       String
+  tipo          String
+  marca         String
+  linea         String
+  modelo        String
+  kilometraje   String
+  ruta          String
+  conductor     String
+  licencia      String
+  inspector     String
+  fecha         String
+  hora          String
+  concepto      String
+  observaciones String
+  checklist     String
+  createdAt     DateTime @default(now())
+  userId        Int?
+  user          User?    @relation(fields: [userId], references: [id])
+}
