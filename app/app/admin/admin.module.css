@@ -1,0 +1,205 @@
+.page {
+  min-height: 100vh;
+  background: #0a0e1a;
+  color: #f9fafb;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  background: #111827;
+  border-bottom: 1px solid #1e2a3a;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f62fe;
+}
+
+.separator {
+  color: #374151;
+}
+
+.headerTitle {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userName {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.logoutLink {
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  padding: 5px 10px;
+  border: 1px solid #1e2a3a;
+  border-radius: 6px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.logoutLink:hover {
+  color: #f9fafb;
+  border-color: #374151;
+}
+
+/* ── Main ── */
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+/* ── Plan banner ── */
+.planBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(15, 98, 254, 0.1);
+  border: 1px solid rgba(15, 98, 254, 0.25);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 32px;
+  font-size: 13px;
+  color: #93c5fd;
+}
+
+.planBannerUrgent {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.planBannerCta {
+  color: #60a5fa;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+/* ── Page title ── */
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #f9fafb;
+  margin: 0 0 28px;
+}
+
+/* ── Stats ── */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.statCard {
+  background: #111827;
+  border: 1px solid #1e2a3a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statNumber {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f62fe;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ── Actions ── */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #9ca3af;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.actionCard {
+  background: #111827;
+  border: 1px solid #1e2a3a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+
+.actionCard:hover {
+  border-color: #0f62fe;
+  background: rgba(15, 98, 254, 0.05);
+}
+
+.actionIcon {
+  font-size: 28px;
+}
+
+.actionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.actionDesc {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .statsGrid,
+  .actionsGrid {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    padding: 0 16px;
+  }
+  .main {
+    padding: 24px 16px;
+  }
+  .planBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

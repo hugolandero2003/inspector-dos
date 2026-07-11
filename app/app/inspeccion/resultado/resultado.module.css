@@ -1,0 +1,113 @@
+.page {
+  min-height: 100vh;
+  background: #0a0e1a;
+  color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: #111827;
+  border-bottom: 1px solid #1e2a3a;
+}
+
+.brand { font-size: 15px; font-weight: 700; color: #0f62fe; }
+
+.logoutLink {
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid #1e2a3a;
+  border-radius: 6px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid #1e2a3a;
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconWrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.iconOk { background: rgba(22,163,74,0.15); color: #4ade80; }
+.iconFail { background: rgba(220,38,38,0.15); color: #f87171; }
+
+.title { font-size: 28px; font-weight: 800; margin: 0; }
+.titleOk { color: #4ade80; }
+.titleFail { color: #f87171; }
+
+.desc { font-size: 15px; color: #9ca3af; margin: 0; line-height: 1.6; }
+
+.ref { font-size: 12px; color: #4b5563; margin: 0; }
+.ref code {
+  background: #1f2937;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btnPrimary {
+  display: block;
+  background: #0f62fe;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.btnPrimary:hover { background: #0353e9; }
+
+.btnSecondary {
+  display: block;
+  background: transparent;
+  color: #6b7280;
+  text-decoration: none;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 14px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btnSecondary:hover { color: #f9fafb; border-color: #4b5563; }

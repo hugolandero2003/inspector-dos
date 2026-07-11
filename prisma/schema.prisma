@@ -1,4 +1,5 @@
-// Prisma schema for PESV Inspector de Carros
+// Prisma schema — Inspector PESV
+// Arquitectura multi-tenant: una Empresa tiene Usuarios, Vehiculos e Inspecciones
 
 generator client {
   provider = "prisma-client"
@@ -9,14 +10,29 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id          Int          @id @default(autoincrement())
-  username    String       @unique
-  password    String
-  createdAt   DateTime     @default(now())
-  inspections Inspection[]
+// ─────────────────────────────────────────────
+// LEADS (solicitudes del landing page)
+// ─────────────────────────────────────────────
+model Lead {
+  id          String     @id @default(cuid())
+  nombre      String
+  empresa     String
+  cargo       String?
+  email       String     @unique
+  telefono    String
+  tamanoFlota String?
+  interes     String
+  mensaje     String?
+  /// Estado del proceso de ventas
+  estado      LeadEstado @default(nuevo)
+  createdAt   DateTime   @default(now())
 }
 
+// ─────────────────────────────────────────────
+// INSPECTION (sistema original — panel /admin)
+// Tabla legacy que alimenta el panel blanco con
+// todas las opciones de búsqueda, PDF y exportación.
+// ─────────────────────────────────────────────
 model Inspection {
   id            String   @id @default(cuid())
   placa         String
@@ -36,6 +52,133 @@ model Inspection {
   observaciones String
   checklist     String
   createdAt     DateTime @default(now())
-  userId        Int?
-  user          User?    @relation(fields: [userId], references: [id])
+  userId        Int?     // referencia opcional al usuario que registró
+
+  @@map("Inspection")
+}
+
+enum LeadEstado {
+  nuevo       // Recién llegó
+  contactado  // HALM ya habló con el lead
+  aprobado    // Se le creó cuenta
+  rechazado   // No calificó
+}
+
+// ─────────────────────────────────────────────
+// EMPRESAS (clientes del sistema)
+// ─────────────────────────────────────────────
+model Empresa {
+  id          String        @id @default(cuid())
+  nombre      String
+  nit         String?       @unique
+  email       String        @unique
+  telefono    String?
+  plan        PlanEmpresa   @default(demo)
+  planVence   DateTime?     // null = sin vencimiento (plan activo ilimitado)
+  estado      EstadoEmpresa @default(activa)
+  createdAt   DateTime      @default(now())
+
+  usuarios    Usuario[]
+  vehiculos   Vehiculo[]
+  inspecciones Inspeccion[]
+}
+
+enum PlanEmpresa {
+  demo    // 8 días de prueba
+  activo  // Plan pagado vigente
+  vencido // Plan expirado
+}
+
+enum EstadoEmpresa {
+  activa
+  suspendida
+  inactiva
+}
+
+// ─────────────────────────────────────────────
+// USUARIOS (acceso al sistema)
+// ─────────────────────────────────────────────
+model Usuario {
+  id           String      @id @default(cuid())
+  empresaId    String
+  empresa      Empresa     @relation(fields: [empresaId], references: [id])
+  nombre       String
+  email        String      @unique
+  password     String      // bcrypt hash
+  rol          RolUsuario  @default(operador)
+  estado       Boolean     @default(true) // true = activo
+  createdAt    DateTime    @default(now())
+
+  inspecciones Inspeccion[]
+
+  @@index([empresaId])
+}
+
+enum RolUsuario {
+  superadmin  // HALM — acceso total al sistema
+  admin       // Empresa — gestiona su empresa, vehículos y operadores
+  operador    // Realiza inspecciones de los vehículos de su empresa
+}
+
+// ─────────────────────────────────────────────
+// VEHÍCULOS (flota de cada empresa)
+// ─────────────────────────────────────────────
+model Vehiculo {
+  id           String        @id @default(cuid())
+  empresaId    String
+  empresa      Empresa       @relation(fields: [empresaId], references: [id])
+  placa        String
+  interno      String?       // Número interno de la empresa
+  tipo         String        // camion, buseta, carro, moto, etc.
+  marca        String
+  linea        String?
+  modelo       String?       // año modelo
+  color        String?
+  propietario  String?
+  soat         DateTime?     // vencimiento SOAT
+  tecnomecanica DateTime?    // vencimiento tecnomecánica
+  estado       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+
+  inspecciones Inspeccion[]
+
+  @@unique([empresaId, placa]) // Una placa es única dentro de una empresa
+  @@index([empresaId])
+}
+
+// ─────────────────────────────────────────────
+// INSPECCIONES (registros del PESV)
+// ─────────────────────────────────────────────
+model Inspeccion {
+  id           String            @id @default(cuid())
+  empresaId    String
+  empresa      Empresa           @relation(fields: [empresaId], references: [id])
+  vehiculoId   String
+  vehiculo     Vehiculo          @relation(fields: [vehiculoId], references: [id])
+  usuarioId    String
+  usuario      Usuario           @relation(fields: [usuarioId], references: [id])
+
+  // Datos del conductor en el momento de la inspección
+  conductor    String
+  licencia     String
+  ruta         String?
+  kilometraje  String?
+
+  // Resultado
+  concepto     ConceptoInspeccion
+  observaciones String?
+
+  // Checklist en JSON: [{ item: "Frenos", estado: "ok"|"falla"|"na", obs: "" }]
+  checklist    Json
+
+  fecha        DateTime          @default(now())
+
+  @@index([empresaId])
+  @@index([vehiculoId])
+}
+
+enum ConceptoInspeccion {
+  aprobado
+  aprobado_con_novedad
+  rechazado
 }

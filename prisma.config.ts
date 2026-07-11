@@ -9,6 +9,7 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Para CLI (migrate/db push) se necesita conexión directa sin pgbouncer
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });

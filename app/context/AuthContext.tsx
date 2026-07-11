@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string): Promise<{ ok: boolean; error?: string }> => {
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/legacy-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

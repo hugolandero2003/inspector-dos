@@ -34,7 +34,6 @@ export async function GET(req: NextRequest) {
         observaciones: true,
         checklist: true,
         createdAt: true,
-        user: { select: { username: true } },
       },
     });
     return NextResponse.json(inspections);
@@ -86,7 +85,7 @@ export async function POST(req: NextRequest) {
         placa: normalizedPlate, interno, tipo, marca, linea, modelo, kilometraje, ruta,
         conductor, licencia, inspector, fecha, hora, concepto, observaciones,
         checklist: typeof checklist === "string" ? checklist : JSON.stringify(checklist),
-        userId: payload?.userId,
+        userId: payload?.usuarioId ? undefined : undefined,  // campo opcional, se omite
       },
     });
 

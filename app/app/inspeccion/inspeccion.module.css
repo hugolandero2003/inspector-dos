@@ -1,0 +1,220 @@
+.page {
+  min-height: 100vh;
+  background: #0a0e1a;
+  color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: #111827;
+  border-bottom: 1px solid #1e2a3a;
+  flex-shrink: 0;
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f62fe;
+}
+
+.logoutLink {
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid #1e2a3a;
+  border-radius: 6px;
+}
+
+.logoutLink:hover { color: #f9fafb; border-color: #374151; }
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #f9fafb;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0 0 40px;
+  text-align: center;
+}
+
+/* ── Buscador ── */
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.placaInput {
+  width: 100%;
+  background: #111827;
+  border: 2px solid #1e2a3a;
+  border-radius: 12px;
+  padding: 18px 20px;
+  color: #f9fafb;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 4px;
+  outline: none;
+  transition: border-color 0.15s;
+  text-transform: uppercase;
+}
+
+.placaInput:focus { border-color: #0f62fe; }
+.placaInput::placeholder { color: #374151; font-size: 20px; letter-spacing: 2px; }
+
+.searchBtn {
+  width: 100%;
+  background: #0f62fe;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.searchBtn:hover:not(:disabled) { background: #0353e9; }
+.searchBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Tarjeta vehículo ── */
+.vehiculoCard {
+  background: #111827;
+  border: 1px solid #1e2a3a;
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.vehiculoHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.vehiculoPlaca {
+  font-size: 32px;
+  font-weight: 800;
+  color: #f9fafb;
+  letter-spacing: 3px;
+}
+
+.vehiculoInterno {
+  font-size: 13px;
+  color: #6b7280;
+  background: #1f2937;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.vehiculoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+  border-top: 1px solid #1e2a3a;
+  padding-top: 16px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoLabel { font-size: 13px; color: #6b7280; }
+.infoValue { font-size: 13px; color: #e5e7eb; font-weight: 500; }
+
+.vehiculoActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── No encontrado ── */
+.noEncontrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 380px;
+  text-align: center;
+}
+
+.noEncontradoIcon { font-size: 48px; }
+.noEncontradoTitle { font-size: 20px; font-weight: 700; color: #f9fafb; margin: 0; }
+.noEncontradoDesc { font-size: 14px; color: #9ca3af; margin: 0 0 8px; }
+
+.noEncontradoActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* ── Botones compartidos ── */
+.btnPrimary {
+  display: block;
+  background: #0f62fe;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover { background: #0353e9; }
+
+.btnSecondary {
+  background: transparent;
+  color: #9ca3af;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btnSecondary:hover { color: #f9fafb; border-color: #4b5563; }
+
+.error {
+  color: #f87171;
+  font-size: 13px;
+  text-align: center;
+  margin: 0;
+}
