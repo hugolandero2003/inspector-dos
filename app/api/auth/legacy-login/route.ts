@@ -90,14 +90,15 @@ export async function POST(req: NextRequest) {
 
     // Ruta según rol
     const redirectTo =
-      usuario.rol === "superadmin" ? "/admin" :
-      usuario.rol === "admin"      ? "/app/admin" :
-                                     "/app/inspeccion";
+      usuario.rol === "superadmin" ? "/superadmin" :
+      usuario.rol === "admin"      ? "/admin" :
+                                     "/inspeccion";
 
     // Cookie para el sistema nuevo
     const response = NextResponse.json({
       token,
       username: usuario.nombre,
+      empresaId: usuario.empresaId,
       redirectTo,
     });
 

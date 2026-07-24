@@ -1,15 +1,37 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import styles from "./landing.module.css";
 import { LeadForm } from "./LeadForm";
 import Carousel from "./Carousel";
 import { ValidationIllustration, PrivateAccessIllustration } from "./SectionIllustrations";
 
 const carouselImages = [
-  '/carousel-images/banner-1.jpg',
-  '/carousel-images/banner-2.jpg',
-  '/carousel-images/banner-3.jpg',
+  '/carousel-images/imagen 1.png',
+  '/carousel-images/imagen 2.png',
+  '/carousel-images/imagen 3.png',
+  '/carousel-images/imagen 4.png',
+  '/carousel-images/imagen 5.png',
+  '/carousel-images/imagen 6.png',
+  '/carousel-images/imagen 7.png'
 ];
 
 export default function LandingPage() {
+  const [scrollOpacity, setScrollOpacity] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      const heroHeight = window.innerHeight - 70;
+
+      const newOpacity = Math.max(0, 1 - currentScroll / (heroHeight * 0.8));
+      setScrollOpacity(newOpacity);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <main className={styles.page}>
       {/* NAVIGATION */}
@@ -29,14 +51,17 @@ export default function LandingPage() {
       </header>
 
       {/* HERO SECTION */}
-      <section className={styles.hero}>
+      <section 
+        className={styles.hero}
+        style={{ '--scroll-opacity': scrollOpacity } as React.CSSProperties}
+      >
         <div className={styles.heroContent}>
           <p className={styles.heroTag}>Inspecciones digitales en tiempo real</p>
           <h1 className={styles.heroTitle}>
             Preoperacionales en la nube. Sin papel, sin retrasos.
           </h1>
           <p className={styles.heroText}>
-            De inspecciones dispersas a un sistema centralizado, trazable y listo para auditoría. Tu operación segura, visible y escalable.
+            De inspecciones dispersas a un sistema centralizado, trazable y listo para auditoría. Tu operation segura, visible y escalable.
           </p>
           <div className={styles.heroCtas}>
             <a href="/registro" className={styles.btnPrimary}>Prueba gratis 8 días</a>
@@ -98,7 +123,7 @@ export default function LandingPage() {
                 <div className={styles.benefitIcon}>✓</div>
                 <div>
                   <h4>Captura instantánea</h4>
-                  <p>Los conductores llenan preoperacionales desde el celular. Funciona offline y sincroniza automáticamente.</p>
+                  <p>Los conductores llenan preoperacionales desde el celular, y sincroniza automáticamente.</p>
                 </div>
               </div>
               
@@ -132,7 +157,7 @@ export default function LandingPage() {
 
           <div className={styles.solutionVisual}>
             <img 
-              src="/carousel-images/solution-side.jpg" 
+              src="/carousel-images/imagen la solucion.jpg" 
               alt="Solución digital preoperacionales" 
               className={styles.solutionImg}
             />
@@ -174,7 +199,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA SECTION (Ubicada justo después de Cómo funciona) */}
+      {/* CTA SECTION */}
       <section className={styles.ctaSection}>
         <h2>¿Listo para mejorar tus operaciones?</h2>
         <p>Acceso completamente funcional durante 8 días. Sin tarjeta de crédito. Sin compromisos.</p>
@@ -226,4 +251,4 @@ export default function LandingPage() {
       </footer>
     </main>
   );
-}
+}  

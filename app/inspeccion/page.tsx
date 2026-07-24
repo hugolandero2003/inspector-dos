@@ -113,8 +113,9 @@ export default function InspeccionPage() {
               </div>
             </div>
             <div className={styles.vehiculoActions}>
+              {/* 🛡️ CORREGIDO: Redirección limpia a la ruta sin /app */}
               <a
-                href={`/app/inspeccion/checklist?vehiculoId=${vehiculo.id}`}
+                href={`/inspeccion/checklist?vehiculoId=${vehiculo.id}`}
                 className={styles.btnPrimary}
               >
                 Iniciar inspección
@@ -135,7 +136,8 @@ export default function InspeccionPage() {
               La placa <strong>{placa}</strong> no está en tu flota.
             </p>
             <div className={styles.noEncontradoActions}>
-              <a href={`/app/inspeccion/nuevo-vehiculo?placa=${placa}`} className={styles.btnPrimary}>
+              {/* 🛡️ CORREGIDO: Redirección limpia a la ruta sin /app */}
+              <a href={`/inspeccion/nuevo-vehiculo?placa=${placa}`} className={styles.btnPrimary}>
                 Registrar vehículo nuevo
               </a>
               <button className={styles.btnSecondary} onClick={limpiar}>

@@ -37,6 +37,7 @@ type InspectionRecord = {
     conceptoFinal: string;
     observaciones: string;
     fechaRegistro: string;
+    fecha: string;
     checklist: Array<{
       id: string;
       item: string;
@@ -50,21 +51,22 @@ type InspectionRecord = {
 
 type ApiInspection = {
   id: string;
-  placa: string;
-  interno: string;
-  tipo: string;
-  marca: string;
-  linea: string;
-  modelo: string;
-  kilometraje: string;
-  ruta: string;
+  vehiculo: {
+    placa: string;
+    interno?: string | null;
+    tipo: string;
+    marca: string;
+    linea?: string | null;
+    modelo?: string | null;
+  };
   conductor: string;
   licencia: string;
+  ruta?: string | null;
+  kilometraje?: string | null;
   inspector: string;
   fecha: string;
-  hora: string;
   concepto: string;
-  observaciones: string;
+  observaciones?: string | null;
   checklist: string;
   createdAt: string;
 };
@@ -122,19 +124,54 @@ const initialDocumentExpirations: DocumentExpirations = {
 
 const ITEMS_PER_PAGE = 8;
 
-function normalizePlate(plate: string) {
-  return plate.trim().toUpperCase();
+function normalizePlate(plate: string | null | undefined) {
+  return (plate ?? "").trim().toUpperCase();
+}
+
+function parseInspectionDateTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return {
+      isoDate: value.split("T")[0] ?? value,
+      time: value.split("T")[1]?.slice(0, 5) ?? "",
+      displayDate: value,
+    };
+  }
+
+  const isoDate = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Bogota",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+
+  const time = new Intl.DateTimeFormat("es-CO", {
+    timeZone: "America/Bogota",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  const displayDate = new Intl.DateTimeFormat("es-CO", {
+    timeZone: "America/Bogota",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+
+  return { isoDate, time, displayDate };
+}
+
+function mapConceptToLabel(concept: string) {
+  if (concept === "rechazado") return "No apto";
+  if (concept === "aprobado_con_novedad") return "Apto con observaciones";
+  return "Apto";
 }
 
 function getRecordTimestamp(record: InspectionRecord) {
-  // Ordenar por fecha real de la inspección, no por fecha de creación del registro
-  const fechaInsp = record.vehiculo.fechaInspeccion;
-  if (fechaInsp) {
-    const ts = new Date(fechaInsp + "T12:00:00").getTime();
-    if (!Number.isNaN(ts)) return ts;
-  }
-  const timestamp = new Date(record.inspeccion.fechaRegistro).getTime();
-  return Number.isNaN(timestamp) ? 0 : timestamp;
+  const timestamp = new Date(record.inspeccion.fecha).getTime();
+  if (!Number.isNaN(timestamp)) return timestamp;
+  return new Date(record.inspeccion.fechaRegistro).getTime() || 0;
 }
 
 function isSameDay(dateValue: string, referenceDate: Date) {
@@ -210,6 +247,9 @@ export default function AdminPage() {
   const [shareCopied, setShareCopied] = useState(false);
   const router = useRouter();
   const auth = useAuth();
+  const shareBaseUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/sistema${auth.user?.empresaId ? `?empresaId=${encodeURIComponent(auth.user.empresaId)}` : ""}`
+    : "/sistema";
 
   const mapApiToRecord = (entry: ApiInspection): InspectionRecord => {
     let checklistParsed: InspectionRecord["inspeccion"]["checklist"] = [];
@@ -220,27 +260,30 @@ export default function AdminPage() {
       checklistParsed = [];
     }
 
+    const parsedDate = parseInspectionDateTime(entry.fecha);
+
     return {
       id: entry.id,
       vehiculo: {
-        placa: entry.placa,
-        interno: entry.interno,
-        marca: entry.marca,
-        modelo: entry.modelo,
-        linea: entry.linea,
-        tipo: entry.tipo,
-        kilometraje: entry.kilometraje,
-        ruta: entry.ruta,
+        placa: entry.vehiculo.placa,
+        interno: entry.vehiculo.interno ?? "",
+        marca: entry.vehiculo.marca,
+        modelo: entry.vehiculo.modelo ?? "",
+        linea: entry.vehiculo.linea ?? "",
+        tipo: entry.vehiculo.tipo,
+        kilometraje: entry.kilometraje ?? "",
+        ruta: entry.ruta ?? "",
         conductor: entry.conductor,
         licenciaConduccion: entry.licencia,
         inspector: entry.inspector,
-        fechaInspeccion: entry.fecha,
-        horaInspeccion: entry.hora,
+        fechaInspeccion: parsedDate.isoDate,
+        horaInspeccion: parsedDate.time,
       },
       inspeccion: {
-        conceptoFinal: entry.concepto,
-        observaciones: entry.observaciones,
+        conceptoFinal: mapConceptToLabel(entry.concepto),
+        observaciones: entry.observaciones ?? "",
         fechaRegistro: entry.createdAt,
+        fecha: entry.fecha,
         checklist: checklistParsed,
       },
     };
@@ -418,7 +461,7 @@ export default function AdminPage() {
   const loadRecords = async (token: string) => {
     try {
       setLoading(true);
-      const response = await fetch("/api/inspections", {
+      const response = await fetch("/api/inspecciones", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -468,7 +511,7 @@ export default function AdminPage() {
 
     if (confirm(`¿Estás seguro de que quieres eliminar la placa ${plate} y todos sus registros?`)) {
       try {
-        const response = await fetch(`/api/inspections/plate/${encodeURIComponent(plate)}`, {
+const response = await fetch(`/api/inspecciones/plate/${encodeURIComponent(plate)}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${auth.token}` },
         });
@@ -532,7 +575,7 @@ export default function AdminPage() {
     setEditError("");
 
     try {
-      const response = await fetch(`/api/inspections/${editingRecord.id}`, {
+      const response = await fetch(`/api/inspecciones/${editingRecord.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${auth.token}` },
       });
@@ -561,7 +604,7 @@ export default function AdminPage() {
     }
 
     try {
-      const response = await fetch(`/api/inspections/${record.id}`, {
+      const response = await fetch(`/api/inspecciones/${record.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${auth.token}` },
       });
@@ -613,7 +656,7 @@ export default function AdminPage() {
     setEditError("");
 
     try {
-      const response = await fetch(`/api/inspections/${editingRecord.id}`, {
+      const response = await fetch(`/api/inspecciones/${editingRecord.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -1946,12 +1989,11 @@ export default function AdminPage() {
               {/* Link box */}
               <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3">
                 <span className="flex-1 truncate text-sm font-mono text-blue-400">
-                  {typeof window !== "undefined" ? `${window.location.origin}/sistema` : "/sistema"}
+                  {shareBaseUrl}
                 </span>
                 <button
                   onClick={() => {
-                    const url = `${window.location.origin}/sistema`;
-                    navigator.clipboard.writeText(url).then(() => {
+                    navigator.clipboard.writeText(shareBaseUrl).then(() => {
                       setShareCopied(true);
                       setTimeout(() => setShareCopied(false), 2500);
                     });
@@ -1968,7 +2010,7 @@ export default function AdminPage() {
 
                 {/* WhatsApp */}
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Hola 👋 Por favor registra tu inspección preoperacional diaria usando este enlace:\n${typeof window !== "undefined" ? window.location.origin : ""}/sistema`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Hola 👋 Por favor registra tu inspección preoperacional diaria usando este enlace:\n${shareBaseUrl}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm font-semibold text-green-400 transition hover:bg-green-500/20"
@@ -1981,7 +2023,7 @@ export default function AdminPage() {
 
                 {/* Email */}
                 <a
-                  href={`mailto:?subject=${encodeURIComponent("Formulario de inspección preoperacional")}&body=${encodeURIComponent(`Hola,\n\nPor favor registra tu inspección preoperacional diaria usando el siguiente enlace:\n\n${typeof window !== "undefined" ? window.location.origin : ""}/sistema\n\nGracias.`)}`}
+                  href={`mailto:?subject=${encodeURIComponent("Formulario de inspección preoperacional")}&body=${encodeURIComponent(`Hola,\n\nPor favor registra tu inspección preoperacional diaria usando el siguiente enlace:\n\n${shareBaseUrl}\n\nGracias.`)}`}
                   className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--surface-strong)]"
                 >
                   <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

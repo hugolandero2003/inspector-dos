@@ -27,7 +27,12 @@
 .slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  transition: transform 500ms ease;
+}
+
+.carousel:hover .slide img {
+  transform: scale(1.05); /* Controla el nivel de zoom (1.05 es un 5% de aumento) */
 }
 
 .dots {
@@ -59,4 +64,102 @@
   border-color: #0f62fe;
   width: 12px;
   height: 12px;
+}
+
+/* ==========================================================================
+   NUEVOS ESTILOS PARA LA VENTANA MODAL (PANTALLA COMPLETA Y FLECHAS)
+   ========================================================================== */
+
+/* Fondo oscuro de la ventana modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85); /* Fondo negro con opacidad */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Asegura que se dibuje por encima de todo lo demás */
+  animation: fadeIn 300ms ease;
+}
+
+/* Contenedor interno de la imagen */
+.modalContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+/* La imagen en tamaño completo */
+.modalImage {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain; /* Evita que la foto se deforme o se corte */
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón flotante para cerrar por si el usuario prefiere hacer clic ahí */
+.closeButton {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: opacity 200ms ease;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+/* Estilos para los botones de navegación de la ventana modal */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  color: white;
+  font-size: 2.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 4px;
+  transition: background-color 200ms ease;
+  z-index: 10000;
+}
+
+.navButton:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.prevButton {
+  left: 2rem;
+}
+
+.nextButton {
+  right: 2rem;
+}
+
+/* Animación de entrada suave para la ventana */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Ajustes responsivos para pantallas de celulares */
+@media (max-width: 768px) {
+  .navButton {
+    font-size: 1.8rem;
+    padding: 0.5rem;
+  }
+  .prevButton { left: 0.5rem; }
+  .nextButton { right: 0.5rem; }
 }

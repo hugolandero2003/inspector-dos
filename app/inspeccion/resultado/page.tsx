@@ -27,8 +27,8 @@ function ResultadoContent() {
       {id && <p className={styles.ref}>Referencia: <code>{id.slice(-8).toUpperCase()}</code></p>}
 
       <div className={styles.actions}>
-        <a href="/app/inspeccion" className={styles.btnPrimary}>Nueva inspección</a>
-        <a href="/app/admin" className={styles.btnSecondary}>Panel de administración</a>
+        <a href="/inspeccion" className={styles.btnPrimary}>Nueva inspección</a>
+        <a href="/admin" className={styles.btnSecondary}>Panel de administración</a>
       </div>
     </div>
   );

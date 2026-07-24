@@ -72,12 +72,13 @@ export async function POST(req: NextRequest) {
       usuario.rol === "superadmin"
         ? "/superadmin"
         : usuario.rol === "admin"
-        ? "/app/admin"
-        : "/app/inspeccion";
+        ? "/admin"
+        : "/inspeccion";
 
     const response = NextResponse.json({
       ok: true,
       redirectTo,
+      empresaId: usuario.empresaId,
       usuario: {
         id: usuario.id,
         nombre: usuario.nombre,

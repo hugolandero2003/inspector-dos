@@ -2,11 +2,13 @@
 
 import { useState, FormEvent, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 type Empresa = { id: string; nombre: string };
 
 export default function LoginPage() {
   const router = useRouter();
+  const auth = useAuth();
 
   const [empresas,        setEmpresas]        = useState<Empresa[]>([]);
   const [empresaId,       setEmpresaId]       = useState("");
@@ -61,21 +63,18 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/legacy-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, empresaId }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) { setError(data.error ?? "Credenciales incorrectas."); return; }
-
-      if (data.token) {
-        localStorage.setItem("pesv_token", data.token);
-        localStorage.setItem("pesv_user", JSON.stringify({ username: data.username }));
+      const result = await auth.login(email, password, { empresaId });
+      if (!result.ok) {
+        setError(result.error ?? "Credenciales incorrectas.");
+        return;
       }
 
-      router.push(data.redirectTo ?? "/app/admin");
+      let targetRoute = result.redirectTo ?? "/admin";
+      if (targetRoute.startsWith("/app")) {
+        targetRoute = targetRoute.replace("/app", "");
+      }
+
+      router.push(targetRoute);
       router.refresh();
     } catch {
       setError("Error de red. Intenta de nuevo.");

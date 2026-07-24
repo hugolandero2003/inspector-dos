@@ -2,12 +2,14 @@
 
 import { FormEvent, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 import styles from "./registro.module.css";
 
 type Paso = 1 | 2;
 
 function RegistroForm() {
   const router       = useRouter();
+  const auth         = useAuth();
   const searchParams = useSearchParams();
   const errorParam   = searchParams.get("error");
 
@@ -46,7 +48,12 @@ function RegistroForm() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "No fue posible crear la cuenta."); return; }
-      router.push(data.redirectTo ?? "/app/admin");
+
+      if (data.token) {
+        auth.completeLogin({ token: data.token, username: nombre, redirectTo: data.redirectTo ?? "/admin" });
+      }
+
+      router.push(data.redirectTo ?? "/admin");
       router.refresh();
     } catch { setError("Error de red. Intenta de nuevo."); }
     finally  { setLoading(false); }

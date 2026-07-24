@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
     });
 
     const response = NextResponse.json(
-      { ok: true, redirectTo: "/app/admin" },
+      { ok: true, redirectTo: "/admin", token, username: nombre, empresaId: nuevaEmpresa.id },
       { status: 201 }
     );
 

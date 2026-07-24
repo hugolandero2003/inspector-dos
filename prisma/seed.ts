@@ -14,15 +14,33 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const hashedPassword = await bcrypt.hash("admin123", 12);
 
-  const admin = await prisma.user.upsert({
-    where: { username: "admin" },
+  const empresa = await prisma.empresa.upsert({
+    where: { email: "admin@empresa.test" },
     update: {},
     create: {
-      username: "admin",
-      password: hashedPassword,
+      nombre: "Empresa Demo",
+      nit: "900000000-0",
+      email: "admin@empresa.test",
+      telefono: "+57 300 000 0000",
+      plan: "demo",
+      planVence: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000),
+      estado: "activa",
     },
   });
 
+  const admin = await prisma.usuario.upsert({
+    where: { email: "admin@empresa.test" },
+    update: {},
+    create: {
+      empresaId: empresa.id,
+      nombre: "Administrador Demo",
+      email: "admin@empresa.test",
+      password: hashedPassword,
+      rol: "admin",
+    },
+  });
+
+  console.log(`✅ Empresa demo creada/verificada (id: ${empresa.id})`);
   console.log(`✅ Usuario admin creado/verificado (id: ${admin.id})`);
 }
 

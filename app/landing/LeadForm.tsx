@@ -148,6 +148,7 @@ export function LeadForm() {
             <option value="demo-8-dias">Quiero solicitar el Acceso de Prueba (8 días gratis)</option>
             <option value="suscripcion">Quiero cotizar una suscripción para mi flota</option>
             <option value="ambas">Ambas opciones (Prueba gratis y cotización)</option>
+            <option value="soporte">Necesito soporte</option>
           </select>
         </label>
       </div>

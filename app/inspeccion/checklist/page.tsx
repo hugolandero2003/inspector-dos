@@ -7,14 +7,14 @@ import styles from "./checklist.module.css";
 // ─── Ítems del checklist según Resolución 40595 PESV ───────────────────────
 const CHECKLIST_BASE = [
   // Documentos
-  { id: "doc-soat",       categoria: "Documentos",     item: "SOAT vigente" },
-  { id: "doc-rtm",        categoria: "Documentos",     item: "Revisión técnico-mecánica vigente" },
-  { id: "doc-tarjeta",    categoria: "Documentos",     item: "Tarjeta de operación" },
+  { id: "doc-soat",    categoria: "Documentos",     item: "SOAT vigente" },
+  { id: "doc-rtm",     categoria: "Documentos",     item: "Revisión técnico-mecánica vigente" },
+  { id: "doc-tarjeta", categoria: "Documentos",     item: "Tarjeta de operación" },
   // Motor
-  { id: "mot-aceite",     categoria: "Motor",          item: "Nivel de aceite" },
-  { id: "mot-agua",       categoria: "Motor",          item: "Nivel de refrigerante / agua" },
-  { id: "mot-frenos",     categoria: "Motor",          item: "Nivel de líquido de frenos" },
-  { id: "mot-bateria",    categoria: "Motor",          item: "Batería / carga eléctrica" },
+  { id: "mot-aceite",  categoria: "Motor",          item: "Nivel de aceite" },
+  { id: "mot-agua",    categoria: "Motor",          item: "Nivel de refrigerante / agua" },
+  { id: "mot-frenos",  categoria: "Motor",          item: "Nivel de líquido de frenos" },
+  { id: "mot-bateria", categoria: "Motor",          item: "Batería / carga eléctrica" },
   // Frenos
   { id: "fre-principal",  categoria: "Frenos",         item: "Frenos de servicio (pedal)" },
   { id: "fre-mano",       categoria: "Frenos",         item: "Freno de parqueo / mano" },
@@ -80,11 +80,7 @@ function ChecklistForm() {
   // Cargar info del vehículo
   useEffect(() => {
     if (!vehiculoId) { setLoadingVehiculo(false); return; }
-    fetch(`/api/vehiculos/buscar?placa=__id__${vehiculoId}`)
-      .catch(() => null)
-      .finally(() => setLoadingVehiculo(false));
 
-    // Buscar por ID directamente
     fetch(`/api/vehiculos/${vehiculoId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data) setVehiculo(data); })
@@ -126,7 +122,9 @@ function ChecklistForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          vehiculoId,
+          vehiculoId,                     // Envió estándar (camelCase)
+          vehiculo_id: vehiculoId,         // Fallback seguro en snake_case
+          vehiculo: vehiculoId,            // Fallback directo alternativo
           conductor,
           licencia,
           ruta,
@@ -143,7 +141,8 @@ function ChecklistForm() {
         return;
       }
 
-      router.push(`/app/inspeccion/resultado?id=${data.id}&concepto=${data.concepto}`);
+      // 🛡️ CORREGIDO: Redirección limpia a la ruta sin /app
+      router.push(`/inspeccion/resultado?id=${data.id}&concepto=${data.concepto}`);
     } catch {
       setError("Error de red. Intenta de nuevo.");
     } finally {
@@ -165,7 +164,8 @@ function ChecklistForm() {
             {vehiculo ? `${vehiculo.marca} ${vehiculo.linea ?? ""} ${vehiculo.modelo ?? ""}`.trim() : "Cargando..."}
           </span>
         </div>
-        <a href="/app/inspeccion" className={styles.btnBack}>← Cambiar</a>
+        {/* 🛡️ CORREGIDO: Ruta limpia sin /app */}
+        <a href="/inspeccion" className={styles.btnBack}>← Cambiar</a>
       </div>
 
       {/* Datos del conductor */}
