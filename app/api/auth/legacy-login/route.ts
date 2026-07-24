@@ -86,6 +86,7 @@ export async function POST(req: NextRequest) {
       empresaId: usuario.empresaId,
       rol: usuario.rol as "superadmin" | "admin" | "operador",
       nombre: usuario.nombre,
+      empresaNombre: usuario.empresa?.nombre ?? null,
     });
 
     // Ruta según rol
@@ -99,6 +100,7 @@ export async function POST(req: NextRequest) {
       token,
       username: usuario.nombre,
       empresaId: usuario.empresaId,
+      empresaNombre: usuario.empresa?.nombre ?? null,
       redirectTo,
     });
 

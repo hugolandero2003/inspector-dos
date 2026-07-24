@@ -229,7 +229,7 @@ export default function AdminPage() {
   const [filterPlaca, setFilterPlaca] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [authenticated, setAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ username: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ username: string; empresaNombre?: string | null } | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mobileListMode, setMobileListMode] = useState<"compact" | "detailed">("compact");
   const [editingRecord, setEditingRecord] = useState<InspectionRecord | null>(null);
@@ -1014,6 +1014,9 @@ const response = await fetch(`/api/inspecciones/plate/${encodeURIComponent(plate
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl">Panel Administrativo</h1>
             <p className="mt-2 text-sm text-[var(--muted)]">
               Bienvenido, <strong>{currentUser?.username}</strong>
+            </p>
+            <p className="text-sm text-[var(--muted)]">
+              Empresa: <strong>{currentUser?.empresaNombre ?? auth.user?.empresaId ?? "Sin empresa"}</strong>
             </p>
           </div>
 
@@ -2010,7 +2013,10 @@ const response = await fetch(`/api/inspecciones/plate/${encodeURIComponent(plate
 
                 {/* WhatsApp */}
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Hola 👋 Por favor registra tu inspección preoperacional diaria usando este enlace:\n${shareBaseUrl}`)}`}
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hola 👋 Por favor registra tu inspección preoperacional diaria usando este enlace:
+${shareBaseUrl}
+
+Este enlace abre el formulario de inspección que deben completar.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm font-semibold text-green-400 transition hover:bg-green-500/20"

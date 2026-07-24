@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import styles from "./inspeccion.module.css";
 
@@ -59,7 +60,7 @@ export default function InspeccionPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <span className={styles.brand}>Inspector PESV</span>
-        <a href="/api/auth/logout" className={styles.logoutLink}>Salir</a>
+        <Link href="/api/auth/logout" className={styles.logoutLink}>Salir</Link>
       </header>
 
       <main className={styles.main}>

@@ -10,6 +10,7 @@ export type JWTPayload = {
   empresaId: string;
   rol: RolUsuario;
   nombre: string;
+  empresaNombre?: string | null;
 };
 
 export function signToken(payload: JWTPayload): string {

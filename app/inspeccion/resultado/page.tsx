@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./resultado.module.css";
@@ -27,8 +28,8 @@ function ResultadoContent() {
       {id && <p className={styles.ref}>Referencia: <code>{id.slice(-8).toUpperCase()}</code></p>}
 
       <div className={styles.actions}>
-        <a href="/inspeccion" className={styles.btnPrimary}>Nueva inspección</a>
-        <a href="/admin" className={styles.btnSecondary}>Panel de administración</a>
+        <Link href="/inspeccion" className={styles.btnPrimary}>Nueva inspección</Link>
+        <Link href="/admin" className={styles.btnSecondary}>Panel de administración</Link>
       </div>
     </div>
   );
@@ -39,7 +40,7 @@ export default function ResultadoPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <span className={styles.brand}>Inspector PESV</span>
-        <a href="/api/auth/logout" className={styles.logoutLink}>Salir</a>
+        <Link href="/api/auth/logout" className={styles.logoutLink}>Salir</Link>
       </header>
       <main className={styles.main}>
         <Suspense fallback={<div />}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './carousel.module.css';
 
 interface CarouselProps {
@@ -65,6 +66,34 @@ export default function Carousel({ images }: CarouselProps) {
     setSelectedImage(loadedImages[newIndex]);
   };
 
+  const modal = selectedImage ? (
+    <div 
+      className={styles.modalOverlay} 
+      onClick={() => setSelectedImage(null)}
+    >
+      <button 
+        className={`${styles.navButton} ${styles.prevButton}`} 
+        onClick={(e) => { e.stopPropagation(); navigateModal('prev'); }}
+        aria-label="Anterior"
+      >
+        &#10094;
+      </button>
+
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <img src={selectedImage} alt="Imagen completa" className={styles.modalImage} />
+        <button className={styles.closeButton} onClick={() => setSelectedImage(null)} aria-label="Cerrar">×</button>
+      </div>
+
+      <button 
+        className={`${styles.navButton} ${styles.nextButton}`} 
+        onClick={(e) => { e.stopPropagation(); navigateModal('next'); }}
+        aria-label="Siguiente"
+      >
+        &#10095;
+      </button>
+    </div>
+  ) : null;
+
   return (
     <>
       <div className={styles.carousel}>
@@ -97,34 +126,7 @@ export default function Carousel({ images }: CarouselProps) {
         </div>
       </div>
 
-      {/* Ventana modal con navegación por flechas */}
-      {selectedImage && (
-        <div 
-          className={styles.modalOverlay} 
-          onClick={() => setSelectedImage(null)}
-        >
-          {/* Flecha Izquierda */}
-          <button 
-            className={`${styles.navButton} ${styles.prevButton}`} 
-            onClick={(e) => { e.stopPropagation(); navigateModal('prev'); }}
-          >
-            &#10094;
-          </button>
-
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <img src={selectedImage} alt="Imagen completa" className={styles.modalImage} />
-            <button className={styles.closeButton} onClick={() => setSelectedImage(null)}>×</button>
-          </div>
-
-          {/* Flecha Derecha */}
-          <button 
-            className={`${styles.navButton} ${styles.nextButton}`} 
-            onClick={(e) => { e.stopPropagation(); navigateModal('next'); }}
-          >
-            &#10095;
-          </button>
-        </div>
-      )}
+      {typeof document !== 'undefined' && selectedImage ? createPortal(modal, document.body) : modal}
     </>
   );
 }

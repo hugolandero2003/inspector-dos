@@ -61,7 +61,7 @@ function ChecklistForm() {
   const vehiculoId = searchParams.get("vehiculoId") ?? "";
 
   const [vehiculo, setVehiculo] = useState<VehiculoInfo | null>(null);
-  const [loadingVehiculo, setLoadingVehiculo] = useState(true);
+  const [loadingVehiculo, setLoadingVehiculo] = useState(!vehiculoId);
 
   // Datos conductor
   const [conductor, setConductor] = useState("");
@@ -79,7 +79,7 @@ function ChecklistForm() {
 
   // Cargar info del vehículo
   useEffect(() => {
-    if (!vehiculoId) { setLoadingVehiculo(false); return; }
+    if (!vehiculoId) return;
 
     fetch(`/api/vehiculos/${vehiculoId}`)
       .then((r) => (r.ok ? r.json() : null))

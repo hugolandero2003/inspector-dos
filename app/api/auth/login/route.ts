@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       empresaId: usuario.empresaId,
       rol: usuario.rol as "superadmin" | "admin" | "operador",
       nombre: usuario.nombre,
+      empresaNombre: usuario.empresa.nombre,
     });
 
     const redirectTo =
@@ -79,6 +80,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       redirectTo,
       empresaId: usuario.empresaId,
+      empresaNombre: usuario.empresa.nombre,
       usuario: {
         id: usuario.id,
         nombre: usuario.nombre,

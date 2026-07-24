@@ -30,6 +30,7 @@ function RegistroForm() {
   const handlePaso1 = (e: FormEvent) => {
     e.preventDefault();
     if (!empresa.trim()) { setError("El nombre de la empresa es obligatorio."); return; }
+    if (!telefono.trim()) { setError("El teléfono de contacto es obligatorio."); return; }
     setError(null);
     setPaso(2);
   };
@@ -50,7 +51,13 @@ function RegistroForm() {
       if (!res.ok) { setError(data.error ?? "No fue posible crear la cuenta."); return; }
 
       if (data.token) {
-        auth.completeLogin({ token: data.token, username: nombre, redirectTo: data.redirectTo ?? "/admin" });
+        auth.completeLogin({
+          token: data.token,
+          username: nombre,
+          empresaId: data.empresaId,
+          empresaNombre: data.empresa ?? undefined,
+          redirectTo: data.redirectTo ?? "/admin",
+        });
       }
 
       router.push(data.redirectTo ?? "/admin");
@@ -91,13 +98,13 @@ function RegistroForm() {
             <span>NIT / Documento tributario</span>
             <input className={styles.input} value={nit}
               onChange={(e) => setNit(e.target.value)}
-              placeholder="Ej: 900123456-1  (opcional)" />
+              placeholder="Ej: 900123456-1" />
           </label>
           <label className={styles.field}>
-            <span>Teléfono de contacto</span>
+            <span>Teléfono de contacto *</span>
             <input className={styles.input} value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
-              placeholder="Ej: +57 310 555 1234  (opcional)" />
+              placeholder="Ej: +57 310 555 1234" required />
           </label>
           {error && <p className={styles.error}>{error}</p>}
           <button type="submit" className={styles.btn}>Continuar →</button>

@@ -260,7 +260,10 @@ const initialChecklistState: Record<string, Compliance> = checklistItems.reduce(
 
 export default function Home() {
   const router = useRouter();
-  const [sharedEmpresaId, setSharedEmpresaId] = useState<string | undefined>(undefined);
+  const [sharedEmpresaId] = useState<string | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    return new URLSearchParams(window.location.search).get("empresaId") ?? undefined;
+  });
   const successShareCaptureRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [vehicleDraft, setVehicleDraft] = useState<VehicleRegistration>(initialVehicle);
@@ -289,12 +292,6 @@ export default function Home() {
     () => requiredVehicleFields.filter((field) => !vehicleDraft[field].trim()),
     [vehicleDraft],
   );
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const companyId = params.get("empresaId") ?? undefined;
-    setSharedEmpresaId(companyId);
-  }, []);
 
   const lineasDisponibles = useMemo(() => {
     const key = normalizeBrand(vehicleDraft.marca);
@@ -451,11 +448,6 @@ export default function Home() {
       setIsPrefillingPlate(false);
     }
   };
-
-  useEffect(() => {
-    if (!registeredVehicle) return;
-    setRegisteredVehicle({ ...vehicleDraft, placa: normalizePlate(vehicleDraft.placa) });
-  }, [vehicleDraft]);
 
   useEffect(() => {
     const plate = normalizePlate(vehicleDraft.placa);
@@ -726,7 +718,7 @@ export default function Home() {
             <Field isDarkMode={isDarkMode} label="Conductor *" value={vehicleDraft.conductor} placeholder="Nombre completo" onChange={(value) => setVehicleDraft((prev) => ({ ...prev, conductor: value }))} />
             <Field isDarkMode={isDarkMode} label="Licencia de conduccion *" value={vehicleDraft.licenciaConduccion} placeholder="12345678" onChange={(value) => setVehicleDraft((prev) => ({ ...prev, licenciaConduccion: value }))} />
             <Field isDarkMode={isDarkMode} label="Inspector responsable *" value={vehicleDraft.inspector} placeholder="Nombre del inspector" onChange={(value) => setVehicleDraft((prev) => ({ ...prev, inspector: value }))} />
-            <DateField isDarkMode={isDarkMode} label="Fecha de inspeccion *" value={vehicleDraft.fechaInspeccion} onChange={(value) => { setVehicleDraft((prev) => ({ ...prev, fechaInspeccion: value })); void checkPlateLockForDate(vehicleDraft.placa, value); }} />
+            <DateField isDarkMode={isDarkMode} label="Fecha de inspeccion *" value={vehicleDraft.fechaInspeccion} onChange={(value) => setVehicleDraft((prev) => ({ ...prev, fechaInspeccion: value }))} />
             <TimeField isDarkMode={isDarkMode} label="Hora de inspeccion *" value={vehicleDraft.horaInspeccion} onChange={(value) => setVehicleDraft((prev) => ({ ...prev, horaInspeccion: value }))} />
 
             <div className="flex flex-col gap-3 pt-2 sm:col-span-2 sm:flex-row sm:flex-wrap sm:items-center lg:col-span-4">
@@ -803,8 +795,7 @@ export default function Home() {
               <button type="button" onClick={handleNuevoRegistro} className={`h-11 w-full rounded-lg border px-6 text-sm font-semibold transition sm:w-auto ${isDarkMode ? "border-violet-500/50 bg-violet-900/30 text-violet-300 hover:bg-violet-900/50" : "border-blue-300 bg-blue-100 text-blue-800 hover:bg-blue-200"}`}>+ Nuevo registro</button>
             </div>
           </form>
-        </section>
-
+        </section> 
         {successModal && (
           <>
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">

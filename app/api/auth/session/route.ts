@@ -20,5 +20,6 @@ export async function GET(req: NextRequest) {
     username: payload.nombre,
     rol:      payload.rol,
     empresaId: payload.empresaId,
+    empresaNombre: payload.empresaNombre ?? null,
   });
 }
